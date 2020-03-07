@@ -23,8 +23,6 @@ from system.logic import SystemLogic
 
 # 패키지
 from .plugin import logger, package_name
-from .site_list import SITE_LIST
-from .logic_from_site import LogicFromSite
 from .model import ModelSetting, ModelScheduler2, ModelBbs2,  ModelGroup2
 import telegram_bot
 from .logic_self import LogicSelf

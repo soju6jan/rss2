@@ -22,12 +22,8 @@ logger = get_logger(package_name)
 
 # 패키지
 #from .common import *
-from .torrent_site_base import TorrentSite
-from .logic_from_site import LogicFromSite, headers
-from .site_list import SITE_LIST
 from .logic import Logic
 from .model import ModelSetting, ModelBbs2, ModelSite2, ModelScheduler2
-#from .logic_bot import LogicBot
 from .logic_self import LogicSelf
 from .logic_search_self import LogicSearchSelf
 from system.model import ModelSetting as SystemModelSetting
