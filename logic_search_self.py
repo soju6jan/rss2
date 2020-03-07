@@ -20,6 +20,7 @@ from framework import app, db, scheduler, path_data, celery
 from framework.job import Job
 from framework.util import Util
 from system.logic import SystemLogic
+from system.model import ModelSetting as SystemModelSetting
 
 # 패키지
 from .plugin import logger, package_name
