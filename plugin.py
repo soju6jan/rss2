@@ -22,6 +22,7 @@ logger = get_logger(package_name)
 
 # 패키지
 #from .common import *
+from .logic_from_site import LogicFromSite
 from .logic import Logic
 from .model import ModelSetting, ModelBbs2, ModelSite2, ModelScheduler2
 from .logic_self import LogicSelf

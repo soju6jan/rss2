@@ -22,7 +22,6 @@ from system.logic import SystemLogic
 # 패키지
 from .plugin import logger, package_name
 from .model import ModelSetting
-from .torrent_site_base import TorrentSite
 #########################################################
 
 
@@ -36,7 +35,7 @@ headers = {
 
 
 
-class LogicFromSite(TorrentSite):
+class LogicFromSite(object):
     proxyes = None
     session = requests.Session()
     
