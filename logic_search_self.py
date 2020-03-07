@@ -191,9 +191,9 @@ class LogicSearchSelf(object):
                 items = LogicSearchSelf.get_list(call='api', group=group_entity.groupname, search_word=search_word)
                 title = 'GROUP : %s' % (group_entity.groupname)
 
-            from .torrent_site_base import TorrentSite
+            #from .torrent_site_base import TorrentSite
             
-            xml = TorrentSite.make_rss(title, items, default_torrent_mode, SystemLogic.get_setting_value('ddns'), search_word=search_word)
+            xml = LogicSearchSelf.make_rss(title, items, default_torrent_mode, SystemLogic.get_setting_value('ddns'))
                 
             
             return xml   
@@ -201,3 +201,66 @@ class LogicSearchSelf(object):
             logger.debug('Exception:%s', e)
             logger.debug(traceback.format_exc())
             logger.debug('get_list_by_api is_site:%s, arg:%s, site:%s, board_id:%s', is_site, arg, site, board_id)
+
+
+
+    @staticmethod
+    def make_rss(title, rss_list, torrent_mode, ddns, is_bot=False, search_word=None):
+        from framework.common.rss import RssUtil
+        xml = '<rss xmlns:showrss="http://showrss.info/" version="2.0">\n'
+        xml += '\t<channel>\n'
+        xml += '\t\t<title>' + '%s</title>\n' % title
+        xml += '\t\t<link></link>\n'
+        xml += '\t\t<description></description>\n'
+        magnet_flag = False
+        for bbs in rss_list:
+            _dict = bbs.as_dict()
+            if bbs.torrent_info is None and 'magnet' in _dict and _dict['magnet'] is not None:
+                for magnet in _dict['magnet']:
+                    magnet_flag = True
+                    item_str = '\t\t<item>\n'
+                    tmp = '\t\t\t<title>%s</title>\n' % RssUtil.replace_xml(bbs.title)
+                    item_str += tmp
+                    item_str += '\t\t\t<link>%s</link>\n' % magnet
+                    date_str = bbs.created_time.strftime('%a, %d %b %Y %H:%M:%S') + ' +0900'
+                    item_str += '\t\t\t<pubDate>%s</pubDate>\n' % date_str
+                    item_str += '\t\t</item>\n'
+                    xml += item_str
+
+            else:
+                if bbs.torrent_info is not None:
+                    for info in bbs.torrent_info:
+                        magnet_flag = True
+                        item_str = '\t\t<item>\n'
+                        if search_word is not None and search_word != '' and info['name'].find(search_word) == -1:
+                            continue
+                        tmp = '\t\t\t<title>%s</title>\n' % RssUtil.replace_xml(info['name'])
+                        item_str += tmp
+                        item_str += '\t\t\t<link>magnet:?xt=urn:btih:%s</link>\n' % info['info_hash']
+                        date_str = bbs.created_time.strftime('%a, %d %b %Y %H:%M:%S') + ' +0900'
+                        item_str += '\t\t\t<pubDate>%s</pubDate>\n' % date_str
+                        item_str += '\t\t</item>\n'
+                        xml += item_str
+
+            if _dict['files']:
+                for index, download in enumerate(_dict['files']):
+                    try:
+                        item_str = '\t\t<item>\n'
+                        if magnet_flag and download[1].lower().endswith('.torrent'):
+                            continue
+                        item_str += '\t\t\t<title>%s</title>\n' % RssUtil.replace_xml(download[1])
+                        url = '%s/%s/api/download/%s_%s' % (ddns, package_name, bbs.id, index)
+                        if SystemModelSetting.get_bool('auth_use_apikey'):
+                            url += '?apikey=%s' % SystemModelSetting.get('auth_apikey')
+                        item_str += '\t\t\t<link>%s</link>\n' % url
+                        date_str = bbs.created_time.strftime('%a, %d %b %Y %H:%M:%S') + ' +0900'
+                        item_str += '\t\t\t<pubDate>%s</pubDate>\n' % date_str
+                        item_str += '\t\t</item>\n'
+                        xml += item_str
+                    except Exception as e:
+                        logger.debug('Exception:%s', e)
+                        logger.debug(traceback.format_exc())
+
+        xml += '\t</channel>\n'
+        xml += '</rss>'
+        return xml

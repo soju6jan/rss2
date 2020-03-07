@@ -249,6 +249,7 @@ def ajax(sub):
 #########################################################
 
 @blueprint.route('/api/download/<bbs_id>', methods=['GET'])
+@check_api
 def api_download(bbs_id):
     try :
         rss_id, index = bbs_id.split('_')
