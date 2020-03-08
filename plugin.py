@@ -96,6 +96,10 @@ def first_menu(sub):
                 arg['is_torrent_info_installed'] = True
             except Exception as e: 
                 pass
+            arg['apikey'] = ''
+            if SystemModelSetting.get_bool('auth_use_apikey'):
+                arg['apikey'] = SystemModelSetting.get('auth_apikey')
+            
             return render_template('%s_%s.html' % (package_name, sub), arg=arg)
         elif sub == 'log':
             return render_template('log.html', package=package_name)
@@ -251,6 +255,7 @@ def ajax(sub):
 @blueprint.route('/api/download/<bbs_id>', methods=['GET'])
 @check_api
 def api_download(bbs_id):
+    logger.debug('api download :%s', bbs_id)
     try :
         rss_id, index = bbs_id.split('_')
 

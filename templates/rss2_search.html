@@ -72,8 +72,10 @@ var current_data = null;
 var ddns = "{{arg['ddns']}}"
 var is_available_normal_download = ("{{arg['is_available_normal_download']}}" == 'True')
 var first_search_word = "{{arg['search_word']}}"
+var apikey = "{{ arg['apikey'] }}";
 var is_torrent_info_installed = ("{{arg['is_torrent_info_installed']}}" == 'True')
 var site_info = null;
+
 
 $(document).ready(function(){
   if ( first_search_word != "None" ) {
@@ -210,14 +212,17 @@ function make_list_html(data) {
     if (data[i].files != null) {
       str2 += '<br>';
       for (j in data[i].files) {
-        str2 += m_row_start(0)
-        str2 += m_col(2, '첨부파일', 'right')
-        tmp = '<a href="'+ddns+'/'+package_name+'/api/download/' + data[i].id + '_'+ j + '">' + data[i].files[j][1] + '</a><br>';
+        str2 += m_row_start(0);
+        str2 += m_col(2, '첨부파일', 'right');
+        sub_url = ddns+'/'+package_name+'/api/download/' + data[i].id + '_'+ j;
+        if (apikey != '') 
+        sub_url += '?apikey=' + apikey;
+        tmp = '<a href="'+sub_url+'">' + data[i].files[j][1] + '</a><br>';
         tmp2 = ''
         if (is_available_normal_download) {
-          tmp2 += m_button('global_downloader_add_btn', '다운로드 추가', [{'key':'hash', 'value':ddns+'/'+package_name+'/api/download/' + data[i].id + '_'+ j }]);
+          tmp2 += m_button('global_downloader_add_btn', '다운로드 추가', [{'key':'hash', 'value':sub_url }]);
         }
-        tmp2 += m_button('global_offcloud_add_btn', 'Offcloud 추가', [{'key':'hash', 'value':ddns+'/'+package_name+'/api/download/' + data[i].id + '_'+ j }]);
+        tmp2 += m_button('global_offcloud_add_btn', 'Offcloud 추가', [{'key':'hash', 'value':sub_url }]);
         tmp += m_button_group(tmp2)
         tmp += '<br>'
         str2 += m_col(10, tmp)

@@ -31,7 +31,7 @@ headers = {
     'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
     'Accept-Language' : 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
     'Referer' : '',
-    'Cookie' :'over18=1'
+#    'Cookie' :'over18=1'
 } 
 
 
@@ -60,7 +60,9 @@ class LogicFromSite(object):
             count = 0
             for item in bbs_list:
                 try:
-                    data = LogicFromSite.get_html(item['url'])
+                    if 'COOKIE' in site_instance.info:
+                        cookie = site_instance.info['COOKIE']
+                    data = LogicFromSite.get_html(item['url'], cookie=cookie)
                     tree = html.fromstring(data)
 
                     # Step 2. 마그넷 목록 생성
@@ -101,6 +103,9 @@ class LogicFromSite(object):
         if 'FORCE_FIRST_PAGE' in site_instance.info['EXTRA']:
             max_page = 1
 
+        if 'COOKIE' in site_instance.info:
+            cookie = site_instance.info['COOKIE']
+
         for p in range(max_page):
             url = LogicFromSite.get_board_url(site_instance, board, str(p+1))
             list_tag = xpath_dict['XPATH'][:xpath_dict['XPATH'].find('[%s]')]
@@ -112,7 +117,7 @@ class LogicFromSite(object):
                 from system import SystemLogicSelenium
                 tmp = SystemLogicSelenium.get_pagesoruce_by_selenium(url, list_tag)
             else:
-                tmp = LogicFromSite.get_html(url)
+                tmp = LogicFromSite.get_html(url, cookie=cookie)
             #logger.debug(tmp)
             tree = html.fromstring(tmp)
             #tree = html.fromstring(LogicFromSite.get_html(url)))
@@ -409,15 +414,19 @@ class LogicFromSite(object):
             logger.error(traceback.format_exc())
     
     @staticmethod
-    def get_html(url, referer=None, stream=False):
+    def get_html(url, referer=None, stream=False, cookie=None):
         try:
             logger.debug('get_html :%s', url)
             headers['Referer'] = '' if referer is None else referer
-            
+            if cookie is not None:
+                headers['Cookie'] = cookie
+
             if LogicFromSite.proxyes:
                 page_content = LogicFromSite.session.get(url, headers=headers, proxies=LogicFromSite.proxyes, stream=stream, verify=False)
             else:
                 page_content = LogicFromSite.session.get(url, headers=headers, stream=stream, verify=False)
+            if cookie is not None:
+                del headers['Cookie']
             if stream:
                 return page_content
             data = page_content.content
