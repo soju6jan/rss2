@@ -107,7 +107,7 @@ class LogicFromSite(object):
             #list_tag = '/html/body/main/div/div/div[3]/div/table/tbody'
             logger.debug('list_tag : %s', list_tag)
 
-            logger.debug('url:%s', url)
+            logger.debug('Url : %s', url)
             if 'USE_SELENIUM' in site_instance.info['EXTRA']:
                 from system import SystemLogicSelenium
                 tmp = SystemLogicSelenium.get_pagesoruce_by_selenium(url, list_tag)
@@ -119,6 +119,7 @@ class LogicFromSite(object):
 
             
             lists = tree.xpath(list_tag)
+
             logger.debug('Count : %s', len(lists))
             
             for i in range(index_start, len(lists)+1, index_step):
@@ -133,7 +134,7 @@ class LogicFromSite(object):
                     #
                     if 'TITLE_XPATH' in xpath_dict:
 
-                        logger.debug(a_tag[a_tag_index].xpath(xpath_dict['TITLE_XPATH']))
+                        #logger.debug(a_tag[a_tag_index].xpath(xpath_dict['TITLE_XPATH']))
                         if xpath_dict['TITLE_XPATH'].endswith('text()'):
                             logger.debug(a_tag[a_tag_index].xpath(xpath_dict['TITLE_XPATH']))
 
@@ -180,8 +181,7 @@ class LogicFromSite(object):
                                 item['id'] = match.group('id')
                                 break
                     
-                    logger.debug('ID:%s', item['id'])
-                    logger.debug('TITLE:%s', item['title'])
+                    logger.debug('ID : %s, TITLE : %s', item['id'], item['title'])
                     if item['id'].strip() == '':
                         continue
                     if is_test:
@@ -193,6 +193,9 @@ class LogicFromSite(object):
                             entity = ModelBbs2.get(site=site_instance.info['NAME'], board=board, board_char_id=item['id'])
                             if entity is None:
                                 bbs_list.append(item)
+                                logger.debug('> Append..')
+                            else:
+                                logger.debug('> exist..')
                         else:
                             # 2019-04-04 토렌트퐁
                             try:
@@ -217,6 +220,7 @@ class LogicFromSite(object):
                     logger.error(site_instance.info)
             if stop_by_maxid:
                 break
+        logger.debug('Last count :%s', len(bbs_list))
         return bbs_list
 
 
@@ -388,7 +392,7 @@ class LogicFromSite(object):
             proxy_url = ModelSetting.get('proxy_url')
 
             if scheduler_instance:
-                logger.debug(scheduler_instance.use_proxy)
+                logger.debug('USE_PROXY : %s', scheduler_instance.use_proxy)
                 if scheduler_instance.use_proxy:
                     flag = True
             else:
