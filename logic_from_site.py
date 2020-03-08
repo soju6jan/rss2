@@ -60,6 +60,7 @@ class LogicFromSite(object):
             count = 0
             for item in bbs_list:
                 try:
+                    cookie = None
                     if 'COOKIE' in site_instance.info:
                         cookie = site_instance.info['COOKIE']
                     data = LogicFromSite.get_html(item['url'], cookie=cookie)
@@ -102,7 +103,7 @@ class LogicFromSite(object):
         stop_by_maxid = False
         if 'FORCE_FIRST_PAGE' in site_instance.info['EXTRA']:
             max_page = 1
-
+        cookie = None
         if 'COOKIE' in site_instance.info:
             cookie = site_instance.info['COOKIE']
 
