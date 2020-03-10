@@ -26,7 +26,6 @@ from system.model import ModelSetting as SystemModelSetting
 from .plugin import logger, package_name
 from .logic_from_site import LogicFromSite
 from .model import ModelSetting, ModelScheduler2, ModelBbs2,  ModelGroup2
-import telegram_bot
 from .logic_self import LogicSelf
 
 #########################################################
