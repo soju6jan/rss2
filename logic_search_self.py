@@ -193,7 +193,7 @@ class LogicSearchSelf(object):
 
             #from .torrent_site_base import TorrentSite
             
-            xml = LogicSearchSelf.make_rss(title, items, default_torrent_mode, SystemLogic.get_setting_value('ddns'))
+            xml = LogicSearchSelf.make_rss(title, items, default_torrent_mode, SystemModelSetting.get('ddns'))
                 
             
             return xml   
