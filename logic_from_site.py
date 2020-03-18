@@ -324,8 +324,8 @@ class LogicFromSite(object):
                         try:
                             ext = os.path.splitext(entity['filename'])[1].lower()
                             item['magnet']
-                            #if ext in ['.smi', '.srt', '.ass']:
-                            if True:
+                            if ext in ['.smi', '.srt', '.ass']:
+                            #if True:
                                 data = LogicFromSite.get_html(entity['link'], referer=item['url'], stream=True)
                                 import io
                                 byteio = io.BytesIO()
