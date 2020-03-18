@@ -7,6 +7,7 @@ import logging
 from time import sleep
 import urllib
 import urllib2
+import os
 
 # third-party
 import requests
@@ -70,7 +71,7 @@ class LogicFromSite(object):
                     item['magnet'] = LogicFromSite.__get_magnet_list(data, tree, site_instance)
                     
                     # Step 3. 다운로드 목록 생성                
-                    item['download'] = LogicFromSite.__get_download_list(data, tree, site_instance)
+                    item['download'] = LogicFromSite.__get_download_list(data, tree, site_instance, item)
 
                     # Stem 4. Torrent_info
                     item['torrent_info'] = LogicFromSite.__get_torrent_info(item['magnet'], scheduler_instance)
@@ -276,7 +277,7 @@ class LogicFromSite(object):
 
     # Step 3. 다운로드 목록 생성
     @staticmethod
-    def __get_download_list(html, tree, site_instance):
+    def __get_download_list(html, tree, site_instance, item):
         download_list = []
         try:
             if 'DOWNLOAD_REGEX' not in site_instance.info:
@@ -319,6 +320,27 @@ class LogicFromSite(object):
                         exist = True
                         break
                 if not exist:
+                    if app.config['config']['is_sjva_server']:# or True:
+                        try:
+                            ext = os.path.splitext(entity['filename'])[1].lower()
+                            if ext in ['.smi', '.srt', '.ass']:
+                                data = LogicFromSite.get_html(entity['link'], referer=item['url'], stream=True)
+                                import io
+                                byteio = io.BytesIO()
+                                for chunk in data.iter_content(1024):
+                                    byteio.write(chunk)
+                                from discord_webhook import DiscordWebhook, DiscordEmbed
+                                webhook_url = app.config['config']['rss_subtitle_webhook']
+                                text = item['title']
+                                webhook = DiscordWebhook(url=webhook_url, content=text)
+                                webhook.add_file(file=byteio.getvalue(), filename=entity['filename'])
+                                response = webhook.execute()
+                                discord = logger.debug(response.json())
+                                if 'attachments' in discord and discord['attachments']:
+                                    entity['direct_url'] = discord['attachments'][0]['url']
+                        except Exception as e:
+                            logger.debug('Exception:%s', e)
+                            logger.debug(traceback.format_exc())
                     download_list.append(entity)
             return download_list
 

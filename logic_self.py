@@ -394,7 +394,8 @@ class LogicSelf(object):
                 bbs.magnet = '|'.join(item['magnet'])
                 bbs.torrent_info = item['torrent_info'] if item['torrent_info'] else None
                 if bbs.file_count > 0:
-                    bbs.files = '||'.join(u'%s|%s' % (x['link'], x['filename']) for x in item['download'])
+                    #bbs.files = '||'.join(u'%s|%s' % (x['link'], x['filename']) for x in item['download'])
+                    bbs.files = '||'.join(u'%s|%s|%s' % (x['link'], x['filename'], x['direct_url'] if 'direct_url' in x else 'NONE') for x in item['download'])
                 else:
                     bbs.files = None
                 db.session.add(bbs)
