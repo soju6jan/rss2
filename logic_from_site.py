@@ -335,8 +335,9 @@ class LogicFromSite(object):
                                 webhook = DiscordWebhook(url=webhook_url, content=text)
                                 webhook.add_file(file=byteio.getvalue(), filename=entity['filename'])
                                 response = webhook.execute()
-                                discord = logger.debug(response.json())
-                                if 'attachments' in discord and discord:
+                                discord = response.json()
+                                logger.debug(discord)
+                                if 'attachments' in discord:
                                     entity['direct_url'] = discord['attachments'][0]['url']
                         except Exception as e:
                             logger.debug('Exception:%s', e)
