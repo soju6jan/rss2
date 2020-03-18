@@ -320,10 +320,12 @@ class LogicFromSite(object):
                         exist = True
                         break
                 if not exist:
-                    if app.config['config']['is_sjva_server']:# or True:
+                    if app.config['config']['is_sjva_server'] and len(item['magnet'])>0:# or True:
                         try:
                             ext = os.path.splitext(entity['filename'])[1].lower()
-                            if ext in ['.smi', '.srt', '.ass']:
+                            item['magnet']
+                            #if ext in ['.smi', '.srt', '.ass']:
+                            if True:
                                 data = LogicFromSite.get_html(entity['link'], referer=item['url'], stream=True)
                                 import io
                                 byteio = io.BytesIO()
