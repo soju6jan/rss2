@@ -331,7 +331,7 @@ class LogicFromSite(object):
                                     byteio.write(chunk)
                                 from discord_webhook import DiscordWebhook, DiscordEmbed
                                 webhook_url = app.config['config']['rss_subtitle_webhook']
-                                text = item['title']
+                                text = '%s\n<%s>' % (item['title'], item['url'])
                                 webhook = DiscordWebhook(url=webhook_url, content=text)
                                 webhook.add_file(file=byteio.getvalue(), filename=entity['filename'])
                                 response = webhook.execute()
