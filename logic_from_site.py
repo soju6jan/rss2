@@ -61,10 +61,12 @@ class LogicFromSite(object):
             count = 0
             for item in bbs_list:
                 try:
-                    cookie = None
-                    if 'COOKIE' in site_instance.info:
-                        cookie = site_instance.info['COOKIE']
-                    data = LogicFromSite.get_html(item['url'], cookie=cookie)
+                    cookie = site_instance.info['COOKIE'] if 'COOKIE' in site_instance.info else None
+                    selenium_tag = None
+                    if 'USE_SELENIUM' in site_instance.info['EXTRA']:
+                        selenium_tag = site_instance.info['SELENIUM_WAIT_TAG']
+
+                    data = LogicFromSite.get_html(item['url'], cookie=cookie, selenium_tag=selenium_tag)
                     tree = html.fromstring(data)
 
                     # Step 2. 마그넷 목록 생성
@@ -440,22 +442,28 @@ class LogicFromSite(object):
             logger.error(traceback.format_exc())
     
     @staticmethod
-    def get_html(url, referer=None, stream=False, cookie=None):
+    def get_html(url, referer=None, stream=False, cookie=None, selenium_tag=None):
         try:
             logger.debug('get_html :%s', url)
-            headers['Referer'] = '' if referer is None else referer
-            if cookie is not None:
-                headers['Cookie'] = cookie
+            if selenium_tag:
+                #if 'USE_SELENIUM' in site_instance.info['EXTRA']:
+                from system import SystemLogicSelenium
+                data = SystemLogicSelenium.get_pagesoruce_by_selenium(url, selenium_tag)
 
-            if LogicFromSite.proxyes:
-                page_content = LogicFromSite.session.get(url, headers=headers, proxies=LogicFromSite.proxyes, stream=stream, verify=False)
             else:
-                page_content = LogicFromSite.session.get(url, headers=headers, stream=stream, verify=False)
-            if cookie is not None:
-                del headers['Cookie']
-            if stream:
-                return page_content
-            data = page_content.content
+                headers['Referer'] = '' if referer is None else referer
+                if cookie is not None:
+                    headers['Cookie'] = cookie
+
+                if LogicFromSite.proxyes:
+                    page_content = LogicFromSite.session.get(url, headers=headers, proxies=LogicFromSite.proxyes, stream=stream, verify=False)
+                else:
+                    page_content = LogicFromSite.session.get(url, headers=headers, stream=stream, verify=False)
+                if cookie is not None:
+                    del headers['Cookie']
+                if stream:
+                    return page_content
+                data = page_content.content
             #logger.debug(data)
         except Exception as e:
             logger.error('Exception:%s', e)

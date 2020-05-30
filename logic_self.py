@@ -326,6 +326,7 @@ class LogicSelf(object):
             logger.debug('RSS scheduler_function')
             items = ModelScheduler2.get_list()
             for item in items:
+                logger.debug(u'스케쥴링 시작')
                 logger.debug('%s %s', item.sitename, item.board_id)
                 if item.site is None:
                     continue
