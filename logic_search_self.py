@@ -125,7 +125,7 @@ class LogicSearchSelf(object):
                     #query = query.filter(ModelBbs.title.like('%'+search_word+'%'))
                 elif select_column == 'filename':
                     #query = query.filter(ModelBbs.files.any(ModelFile.filename.like('%'+search_word+'%')))
-                    query = query.filter(ModelBbs2.filename.like('%'+search_word+'%'))
+                    query = query.filter(ModelBbs2.files.like('%'+search_word+'%'))
                 elif select_column == 'magnet':
                     #query = query.filter(ModelBbs.files.any(ModelFile.magnet.like('%'+search_word+'%')))
                     
