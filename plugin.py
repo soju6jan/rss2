@@ -300,27 +300,25 @@ def download2(data, scheduler_instance):
 #########################################################
 # API - sjva.me 연동
 #########################################################
-@blueprint.route('/api/web/<sub>', methods=['GET', 'POST'])
+@blueprint.route('/api/<sub>', methods=['GET', 'POST'])
+@check_api
 def api_web(sub):
     try :
-        logger.debug('API SJVA.ME : %s', sub)
-        if request.method == 'GET':
-            return jsonify('using sjva.me')
-        else:
+        if sub == 'site_update':
             content = request.form['content']
             import base64
             decode_content = base64.b64decode(content).decode('utf8')
-            logger.debug(decode_content)
+            #logger.debug(decode_content)
             #decode_content = content
             info = LogicSelf.parse_site_info_from_string(decode_content)
-            logger.debug(info)
+            #logger.debug(info)
             ret = {}
             if info is None:
                 ret['ret'] = 'error'
                 ret['log'] = '변환에 실패하였습니다.'
             else:
                 ret = ModelSite2.save('web', info, decode_content)
-            logger.debug(ret)
+            #logger.debug(ret)
             return jsonify(ret)
     except Exception, e:
         logger.error('Exception:%s', e)
