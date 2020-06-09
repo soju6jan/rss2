@@ -74,7 +74,7 @@ def first_menu(sub):
             arg['package_name']  = package_name
             arg['scheduler'] = str(scheduler.is_include(package_name))
             arg['is_running'] = str(scheduler.is_running(package_name))
-            arg['is_test_server'] = (SystemModelSetting.get('ddns').find('https://sjva-dev.soju6jan.com') != -1)
+            arg['is_test_server'] = app.config['config']['server']
             return render_template('%s_%s.html' % (package_name, sub), arg=arg)
         elif sub in ['site', 'scheduler', 'group']:
             arg = {'package_name' : package_name}
