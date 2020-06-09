@@ -305,12 +305,17 @@ class LogicSelf(object):
     @staticmethod
     def action_test(req):
         try:
-            site_id = req.form['site_id'].strip()
-            board_id = req.form['board_id'].strip()
-            site_instance = ModelSite2.get(site_id=site_id)
-            #if site_instance.info_type in ['web']:
-            rss_list = LogicFromSite.get_list(site_instance, board_id, max_count=ModelSetting.get_int('test_count'))
-            return rss_list
+            #site_id = req.form['site_id'].strip()
+            #board_id = req.form['board_id'].strip()
+            #site_instance = ModelSite2.get(site_id=site_id)
+            #rss_list = LogicFromSite.get_list(site_instance, board_id, max_count=ModelSetting.get_int('test_count'))
+            #return rss_list
+            import json
+            data = {"s": [["https://torrent.vet/data/file/torrent_movie_eng/0_8fBHcGMY_5a1484d4715e21936b0d7a5a33500cd88a88f605.smi", "Burnt.2015.1080p.BluRay.x264-RARBG.smi", "https://cdn.discordapp.com/attachments/689800940626378806/719001694100390018/Burnt.2015.1080p.BluRay.x264-RARBG.smi"]], "m": {"target": "sub", "title": "\ub354 \uc170\ud504", "year": "2015", "kor": false, "id": "94239", "daum": {"genre": "\ub4dc\ub77c\ub9c8", "country": "\ubbf8\uad6d", "rate": "15\uc138\uc774\uc0c1\uad00\ub78c\uac00", "poster": "https://search1.daumcdn.net/thumb/C146x211.q70/?fname=http%3A%2F%2Ft1.daumcdn.net%2Fmovie%2F7a71be82a07074adfadfc2c979bebfa5387ccbb0", "eng": "Burnt"}}, "t": {"hash": "3d4dcc5bfbceaade3082bce6eb073c52571c385d", "name": "Burnt.2015.1080p.BluRay.x265-RARBG", "url": "https://torrent.vet/view/torrent_movie_eng/94250.html", "filename": "Burnt.2015.1080p.BluRay.x265-RARBG.mp4", "num": 4, "dirname": "Burnt.2015.1080p.BluRay.x265-RARBG", "size": 1689598045}}
+            response = requests.post("https://sjva.me/sjva/torrent_%s.php" % 'movie', data={'data':json.dumps(data)})
+            return ""
+
+
         except Exception as e: 
             logger.error('Exception:%s', e)
             logger.error(traceback.format_exc())
