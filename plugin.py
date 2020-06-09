@@ -238,8 +238,15 @@ def ajax(sub):
             #from framework.common.torrent.process import TorrentProcess
             #tmp  = db.session.query(ModelBbs2).all()
             #ret = TorrentProcess.server_process(tmp, category='AV')
-            
-            return jsonify(ret)
+            from sqlalchemy import desc
+            from bot_downloader_movie.model import ModelMovieItem
+            import json
+            datas = db.session.query(ModelMovieItem).order_by(ModelMovieItem.id).limit(7000).all()
+            for data in datas:
+                response = requests.post("https://sjva.me/sjva/torrent_%s.php" % 'movie', data={'data':json.dumps(data.as_dict())})
+            return ""
+
+            #return jsonify(ret)
     
     except Exception as e: 
         logger.error('Exception:%s', e)
