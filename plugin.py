@@ -235,9 +235,10 @@ def ajax(sub):
                 logger.error(traceback.format_exc())
         elif sub == 'server_test':
             logger.debug('server_test')
-            from framework.common.torrent.process import TorrentProcess
-            tmp  = db.session.query(ModelBbs2).all()
-            ret = TorrentProcess.server_process(tmp, category='AV')
+            #from framework.common.torrent.process import TorrentProcess
+            #tmp  = db.session.query(ModelBbs2).all()
+            #ret = TorrentProcess.server_process(tmp, category='AV')
+            
             return jsonify(ret)
     
     except Exception as e: 
