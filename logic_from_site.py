@@ -285,15 +285,14 @@ class LogicFromSite(object):
             if 'DOWNLOAD_REGEX' not in site_instance.info:
                 return download_list
             #logger.debug(html)
+            #tmp = html.find('a href="https://www.rgtorrent.me/bbs/download.php')
+            #if tmp != -1:
+            #    logger.debug(html[tmp-300:tmp+300])
+            #logger.debug(site_instance.info['DOWNLOAD_REGEX'])
             tmp = re.compile(site_instance.info['DOWNLOAD_REGEX'], re.MULTILINE).finditer(html)
             for t in tmp:
-                logger.debug(t.group('url'))
-                logger.debug(t.group('filename'))
-                #if t.group('filename').strip().lower().find('.torrent') != -1:
-                #   if 'ONLY_FILE' in site_instance.info and site_instance.info['ONLY_FILE]:
-                #       pass
-                #   else:
-                #       continue
+                #logger.debug(t.group('url'))
+                #logger.debug(t.group('filename'))
                 if t.group('filename').strip() == '':
                     continue
                 entity = {}
@@ -302,12 +301,6 @@ class LogicFromSite(object):
                 logger.debug(entity['link'])
                 entity['filename'] = urllib.unquote(t.group('filename').strip())
                 entity['filename'] = unescape(entity['filename'])
-                #try:
-                #    entity['filename'] = entity['filename'].encode('cp949')
-                #except:
-                #    pass
-                #if not entity['link'].startswith('javascript') and not entity['link'].startswith('http'):
-                #    entity['link'] = '%s%s' % (site_instance.info['TORRENT_SITE_URL'], entity['link'])
                 if 'DOWNLOAD_URL_SUB' in site_instance.info:
                     logger.debug(entity['link'])
                     entity['link'] = re.sub(site_instance.info['DOWNLOAD_URL_SUB'][0], site_instance.info['DOWNLOAD_URL_SUB'][1].format(URL=site_instance.info['TORRENT_SITE_URL']), entity['link']).strip()
