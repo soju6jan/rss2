@@ -318,14 +318,35 @@ class LogicFromSite(object):
                     if app.config['config']['is_sjva_server'] and len(item['magnet'])>0:# or True:
                         try:
                             ext = os.path.splitext(entity['filename'])[1].lower()
-                            item['magnet']
+                            #item['magnet']
                             if ext in ['.smi', '.srt', '.ass']:
                             #if True:
-                                data = LogicFromSite.get_html(entity['link'], referer=item['url'], stream=True)
                                 import io
-                                byteio = io.BytesIO()
-                                for chunk in data.iter_content(1024):
-                                    byteio.write(chunk)
+                                if 'USE_SELENIUM' in site_instance.info['EXTRA']:
+                                    from system import SystemLogicSelenium
+                                    driver = SystemLogicSelenium.get_driver()
+                                    driver.get(entity['link'])
+                                    import time
+                                    time.sleep(10)
+                                    files = SystemLogicSelenium.get_downloaded_files()
+                                    logger.debug(files)
+                                    # 파일확인
+                                    filename_no_ext = os.path.splitext(entity['filename'].split('/')[-1])
+                                    file_index = 0
+                                    for idx, value in enumerate(files):
+                                        if value.find(filename_no_ext[0]) != -1:
+                                            file_index =  idx
+                                            break
+                                    logger.debug('fileindex : %s', file_index)
+                                    content = SystemLogicSelenium.get_file_content(files[file_index])
+                                    
+                                    byteio = io.BytesIO()
+                                    byteio.write(content)
+                                else:
+                                    data = LogicFromSite.get_html(entity['link'], referer=item['url'], stream=True)
+                                    byteio = io.BytesIO()
+                                    for chunk in data.iter_content(1024):
+                                        byteio.write(chunk)
                                 from discord_webhook import DiscordWebhook, DiscordEmbed
                                 webhook_url = app.config['config']['rss_subtitle_webhook']
                                 text = '%s\n<%s>' % (item['title'], item['url'])
