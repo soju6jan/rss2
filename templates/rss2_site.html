@@ -227,7 +227,7 @@ function make_site_list() {
   data = current_data.site
   str = ''
   for(var i in data) {
-    console.log(data[i])
+    //console.log(data[i])
     str += m_row_start();
     tmp = data[i].id;
     str += m_col(1, tmp);
@@ -240,6 +240,10 @@ function make_site_list() {
       tmp += '<span style="color:red">마그넷만 가능</span>';
     } else {
       tmp += '<span style="color:blue">파일 다운로드 가능</span>';
+    }
+    
+    if (data[i].info.EXTRA.indexOf('USE_SELENIUM') != -1) {
+      tmp += '<br><span style="color:red"><strong>SELENIUM 사용</strong></span>';
     }
     str += m_col(2, tmp);
 

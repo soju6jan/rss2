@@ -38,9 +38,11 @@
       {% if arg['is_test_server'] %}
       {{ macros.setting_button([['server_test_btn', '서버테스트']], left='서버테스트' ) }}
       {% endif %}
+      <!--
       {{ macros.m_hr() }}
       {{ macros.info_text_and_buttons('cfscrape_installed', 'cloudflare-scrape 설치', [['cfscrape_install_btn', '설치']], value=arg['cfscrape_installed'], desc=['cloudflare-scrape 설치']) }}
       {{ macros.info_text_and_buttons('node_installed', 'node 설치', [['node_installed_btn', '설치']], value=arg['node_installed'], desc=['node 설치']) }}
+      -->
     {{ macros.m_tab_content_end() }}
   </div><!--tab-content-->
 </div> <!--전체-->

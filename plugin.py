@@ -282,16 +282,22 @@ def api_download(bbs_id):
         if 'USE_SELENIUM' in site_instance['EXTRA']:
             from system import SystemLogicSelenium
             driver = SystemLogicSelenium.get_driver()
-            logger.debug(entity['files'][int(index)][0])
+
+            SystemLogicSelenium.get_pagesoruce_by_selenium(data[0], site_instance['SELENIUM_WAIT_TAG'])
+
+            logger.debug(data[1])
             logger.debug('selenium download go..')
-            driver.get(entity['files'][int(index)][0])
+            driver.get(data[1])
             logger.debug('selenium wait before...')
-            SystemLogicSelenium.waitUntilDownloadCompleted(120)
+            #SystemLogicSelenium.waitUntilDownloadCompleted(120)
+            #SystemLogicSelenium.waitUntilDownloadCompleted(10)
+            import time
+            time.sleep(10)
             logger.debug('selenium wait end')
             files = SystemLogicSelenium.get_downloaded_files()
             logger.debug(files)
             # 파일확인
-            filename_no_ext = os.path.splitext(entity['files'][int(index)][0].split('/')[-1])
+            filename_no_ext = os.path.splitext(data[2].split('/')[-1])
             file_index = 0
             for idx, value in enumerate(files):
                 if value.find(filename_no_ext[0]) != -1:
