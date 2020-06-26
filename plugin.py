@@ -268,12 +268,46 @@ def api_download(bbs_id):
         rss_id, index = bbs_id.split('_')
 
         entity = ModelBbs2.get(id=int(rss_id)).as_dict()
+
+        #logger.debug(entity)
         scheduler_instance = ModelScheduler2.get2(sitename=entity['site'], board_id=entity['board'])
         data = [
             entity['url'],
             entity['files'][int(index)][0],
             entity['files'][int(index)][1]
         ]
+        
+        site_instance = ModelSite2.get(name=entity['site']).info
+
+        if 'USE_SELENIUM' in site_instance['EXTRA']:
+            from system import SystemLogicSelenium
+            driver = SystemLogicSelenium.get_driver()
+            logger.debug(entity['files'][int(index)][0])
+            logger.debug('selenium download go..')
+            driver.get(entity['files'][int(index)][0])
+            logger.debug('selenium wait before...')
+            SystemLogicSelenium.waitUntilDownloadCompleted(120)
+            logger.debug('selenium wait end')
+            files = SystemLogicSelenium.get_downloaded_files()
+            logger.debug(files)
+            # 파일확인
+            filename_no_ext = os.path.splitext(entity['files'][int(index)][0].split('/')[-1])
+            file_index = 0
+            for idx, value in enumerate(files):
+                if value.find(filename_no_ext[0]) != -1:
+                    file_index =  idx
+                    break
+            logger.debug('fileindex : %s', file_index)
+            content = SystemLogicSelenium.get_file_content(files[file_index])
+            byteio = io.BytesIO()
+            byteio.write(content)
+            filedata = byteio.getvalue()
+            return send_file(
+                io.BytesIO(filedata),
+                mimetype='application/octet-stream',
+                as_attachment=True,
+                attachment_filename=data[2])
+       
         return download2(data, scheduler_instance)
     except Exception, e:
         logger.error('Exception:%s', e)
