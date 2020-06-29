@@ -83,6 +83,8 @@ class LogicFromSite(object):
 
                     if 'SLEEP_5' in site_instance.info['EXTRA']: 
                         sleep(5)
+                    if 'DELAY' in site_instance.info:
+                        sleep(site_instance.info['DELAY'])
                 except Exception as e: 
                     logger.error('Exception:%s', e)
                     logger.error(traceback.format_exc())
@@ -92,6 +94,9 @@ class LogicFromSite(object):
                 count += 1
                 if count >= max_count:
                     break
+            # selenium이 celery에서 돌 경우 해제안됨.
+            from system import SystemLogicSelenium
+            SystemLogicSelenium.close_driver()
             return bbs_list
         except Exception as e: 
             logger.error('Exception:%s', e)
