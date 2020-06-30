@@ -359,7 +359,10 @@ class LogicSelf(object):
                     from framework.common.torrent.process import TorrentProcess
                     TorrentProcess.server_process(save_list, category=group_name)
 
- 
+
+            # selenium이 celery에서 돌 경우 해제안됨.
+            from system import SystemLogicSelenium
+            SystemLogicSelenium.close_driver()
                         
         except Exception as e: 
             logger.error('Exception:%s', e)

@@ -94,9 +94,7 @@ class LogicFromSite(object):
                 count += 1
                 if count >= max_count:
                     break
-            # selenium이 celery에서 돌 경우 해제안됨.
-            from system import SystemLogicSelenium
-            SystemLogicSelenium.close_driver()
+
             return bbs_list
         except Exception as e: 
             logger.error('Exception:%s', e)
