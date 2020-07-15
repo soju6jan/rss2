@@ -54,7 +54,7 @@ plugin_info = {
     'description' : '토렌트 크롤링. 크롤링한 데이터, Bot으로 수신한 데이터 검색',
     'home' : 'https://github.com/soju6jan/rss2',
     'more' : '',
-    'policy_point' : 4000,
+    #'policy_point' : 4000,
 }
 #########################################################
 
