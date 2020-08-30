@@ -32,7 +32,7 @@ from system.model import ModelSetting as SystemModelSetting
 
 blueprint = Blueprint(package_name, package_name, url_prefix='/%s' %  package_name, template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
 menu = {
-    'main' : [package_name, 'RSS2'],
+    'main' : [package_name, 'RSS'],
     'sub' : [
         ['setting', '설정'], ['site', '지원 사이트'], ['scheduler', '스케쥴링'], ['group', '그룹화'], ['search', '검색'], ['log', '로그']
     ],
