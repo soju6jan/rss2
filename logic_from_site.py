@@ -391,7 +391,7 @@ class LogicFromSite(object):
             from torrent_info import Logic as TorrentInfoLogic
             for m in magnet_list:
                 logger.debug('Get_torrent_info:%s', m)
-                for i in range(3):
+                for i in range(1):
                     tmp = None
                     try:
                         tmp = TorrentInfoLogic.parse_magnet_uri(m, no_cache=True)
