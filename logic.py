@@ -16,7 +16,7 @@ from sqlalchemy import desc
 from sqlalchemy import or_, and_, func, not_
 
 # sjva 공용
-from framework import app, db, scheduler, path_data, celery
+from framework import app, db, scheduler, path_data, celery, path_app_root
 from framework.job import Job
 from framework.util import Util
 from system.logic import SystemLogic
@@ -31,7 +31,7 @@ from .logic_self import LogicSelf
 
 class Logic(object):
     db_default = { 
-        'db_version' : '1',
+        'db_version' : '2',
         'auto_start' : 'False',
         'interval' : '10',
         'feed_count' : '100',
@@ -45,6 +45,7 @@ class Logic(object):
         'use_torrent_info' : 'False', 
         'test_count' : '3',
         'max_page' : '5',
+        'scheduler_count' : '1',
     }
     
 
@@ -66,7 +67,7 @@ class Logic(object):
             logger.debug('%s plugin_load', package_name)
             # DB 초기화
             Logic.db_init()
-
+            Logic.migration()
             if ModelSetting.get_bool('auto_start'):
                 Logic.scheduler_start()
 
@@ -106,6 +107,7 @@ class Logic(object):
 
     @staticmethod
     def scheduler_function():
+        ModelSetting.set('scheduler_count', '%s' % (ModelSetting.get_int('scheduler_count') + 1)  )
         if app.config['config']['use_celery']:
             result = LogicSelf.scheduler_function_task.apply_async()
             result.get()
@@ -144,6 +146,24 @@ class Logic(object):
             ret = 'fail'
         return ret
 
+    @staticmethod
+    def migration():
+        try:
+            if ModelSetting.get('db_version') == '1':
+                import sqlite3
+                db_file = os.path.join(path_app_root, 'data', 'db', '%s.db' % package_name)
+                connection = sqlite3.connect(db_file)
+                cursor = connection.cursor()
+                query = 'ALTER TABLE %s_scheduler2 ADD priority INT' % (package_name)
+                cursor.execute(query)
+                query = 'ALTER TABLE %s_scheduler2 ADD scheduler_interval INT' % (package_name)
+                cursor.execute(query)
+                connection.close()
+                ModelSetting.set('db_version', '2')
+                db.session.flush()
+        except Exception as e:
+            logger.error('Exception:%s', e)
+            logger.error(traceback.format_exc())
     # 기본 구조 End
     ##################################################################
 

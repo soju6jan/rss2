@@ -241,6 +241,11 @@ class ModelScheduler2(db.Model):
     group_id= db.Column(db.Integer, db.ForeignKey('%s_group.id' % package_name))
     bbs = db.relationship('ModelBbs2', backref='scheduler', lazy=True)
 
+    # 2버전추가
+    priority = db.Column(db.Integer)
+    scheduler_interval = db.Column(db.Integer) # 스케쥴러 몇회마다 한번씩 수행할지 결정할 값 0:매번수행, 1: 실행-실행 2: 실행-패스-실행 , 3:실행-패스-패스-실행
+    #scheduler_interval_current = db.Column(db.Integer) # 
+
     def __init__(self, site_instance):
         self.created_time = datetime.now()
         self.site_id = site_instance.id
@@ -258,7 +263,10 @@ class ModelScheduler2(db.Model):
     @staticmethod
     def get_list(by_dict=False):
         try:
-            tmp = db.session.query(ModelScheduler2).all()
+            query = db.session.query(ModelScheduler2)
+            query = query.order_by(ModelScheduler2.priority)
+            query = query.order_by(ModelScheduler2.id)
+            tmp = query.all()
             if by_dict:
                 tmp = [x.as_dict() for x in tmp]
             return tmp

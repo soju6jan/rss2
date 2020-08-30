@@ -111,6 +111,8 @@ class LogicSelf(object):
                 entity.include_scheduler = (req.form['include_scheduler'] == 'True')
                 entity.use_proxy = (req.form['use_proxy'] == 'True')
                 entity.use_torrent_info = (req.form['use_torrent_info'] == 'True')
+                entity.priority = int(req.form['priority'])
+                entity.scheduler_interval = int(req.form['scheduler_interval'])
                 db.session.add(entity)
                 db.session.commit()
                 return 'success'
@@ -120,6 +122,8 @@ class LogicSelf(object):
                     entity.include_scheduler = (req.form['include_scheduler'] == 'True')
                     entity.use_proxy = (req.form['use_proxy'] == 'True')
                     entity.use_torrent_info = (req.form['use_torrent_info'] == 'True')
+                    entity.priority = int(req.form['priority'])
+                    entity.scheduler_interval = int(req.form['scheduler_interval'])
                     db.session.commit()
                     return 'success_update'
         except Exception as e: 
@@ -332,6 +336,14 @@ class LogicSelf(object):
                 if not item.include_scheduler:
                     logger.debug('not include_scheduler')
                     continue
+                if item.scheduler_interval is None or item.scheduler_interval <= 1:
+                    pass
+                else:
+                    scheduler_count = ModelSetting.get_int('scheduler_count')
+                    logger.debug('scheduler_count:%s', scheduler_count)
+                    if (scheduler_count % item.scheduler_interval) != 0:
+                        logger.debug("scheduler_interval : %s", item.scheduler_interval)
+                        continue
 
                 if 'USING_BOARD_CHAR_ID' not in item.site.info['EXTRA']:
                     last_bbs = item.get_last_bbs()
