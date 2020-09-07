@@ -411,12 +411,12 @@ class ModelFile2(db.Model):
         return ret
 """    
 
-
+"""
 group_scheduler2 = db.Table('plugin_%s_group_scheduler2' % package_name,
     db.Column('group_id', db.Integer, db.ForeignKey('%s_group.id' % package_name)),
     db.Column('scheduler_id', db.Integer, db.ForeignKey('%s_scheduler2.id' % package_name))
 )
-
+"""
 
 class ModelGroup2(db.Model):
     __tablename__ = '%s_group' % package_name
