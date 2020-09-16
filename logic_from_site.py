@@ -258,6 +258,9 @@ class LogicFromSite(object):
                                 magnet_list.append(tmp)
                             #logger.debug('MARNET : %s', item['magnet'])
                     
+                    #2020-09-17 javdb 동명 컨텐츠 너무 많이 뜸
+                    if len(magnet_list) > 3:
+                        magnet_list = magnet_list[:3]
                 except Exception as e:
                     logger.debug('Exception:%s', e)
                     logger.debug(traceback.format_exc())
