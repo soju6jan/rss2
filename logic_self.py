@@ -416,7 +416,7 @@ class LogicSelf(object):
                 db.session.add(bbs)
                 db.session.commit()
                 ret.append(bbs)
-            except Exception, e:
+            except Exception as e:
                 logger.debug('Exception:%s', e)
                 logger.debug(traceback.format_exc())
         return ret
@@ -430,7 +430,7 @@ class LogicSelf(object):
             if type(max_id) == type(u''):
                 max_id = int(max_id)
             return max_id
-        except Exception, e:
+        except Exception as e:
             logger.error('Exception:%s', e)
             logger.error(traceback.format_exc())
 

@@ -32,9 +32,9 @@ from system.model import ModelSetting as SystemModelSetting
 
 blueprint = Blueprint(package_name, package_name, url_prefix='/%s' %  package_name, template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
 menu = {
-    'main' : [package_name, 'RSS'],
+    'main' : [package_name, u'RSS'],
     'sub' : [
-        ['setting', '설정'], ['site', '지원 사이트'], ['scheduler', '스케쥴링'], ['group', '그룹화'], ['search', '검색'], ['log', '로그']
+        ['setting', u'설정'], ['site', u'지원 사이트'], ['scheduler', u'스케쥴링'], ['group', u'그룹화'], ['search', u'검색'], ['log', u'로그']
     ],
     'category' : 'torrent'
 } 
@@ -47,11 +47,11 @@ def plugin_unload():
 
 plugin_info = {
     'version' : '0.1.0.0',
-    'name' : 'RSS',
+    'name' : u'RSS',
     'category_name' : 'torrent',
     'icon' : '',
     'developer' : 'soju6jan',
-    'description' : '토렌트 크롤링. 크롤링한 데이터, Bot으로 수신한 데이터 검색',
+    'description' : u'토렌트 크롤링. 크롤링한 데이터, Bot으로 수신한 데이터 검색',
     'home' : 'https://github.com/soju6jan/rss2',
     'more' : '',
     #'policy_point' : 4000,
@@ -316,7 +316,7 @@ def api_download(bbs_id):
                 attachment_filename=data[2])
        
         return download2(data, scheduler_instance)
-    except Exception, e:
+    except Exception as e:
         logger.error('Exception:%s', e)
         logger.error(traceback.format_exc())
 
@@ -340,7 +340,7 @@ def download2(data, scheduler_instance):
             mimetype='application/octet-stream',
             as_attachment=True,
             attachment_filename=data[2])
-    except Exception, e:
+    except Exception as e:
         logger.error('Exception:%s', e)
         logger.error(traceback.format_exc())
 
@@ -369,7 +369,7 @@ def api_web(sub):
                 ret = ModelSite2.save('web', info, decode_content)
             #logger.debug(ret)
             return jsonify(ret)
-    except Exception, e:
+    except Exception as e:
         logger.error('Exception:%s', e)
         logger.error(traceback.format_exc())
 #########################################################
@@ -386,7 +386,7 @@ def api_rss(sitename, boardname):
     try:
         xml = LogicSearchSelf.get_list_by_api(request, True, -1, sitename, boardname)
         return Response(xml, mimetype='application/xml')
-    except Exception, e:
+    except Exception as e:
         logger.error('Exception:%s', e)
         logger.error(traceback.format_exc())
 
@@ -400,7 +400,7 @@ def api_board_id(id):
             return Response(xml, mimetype='application/xml')
         else:
             return jsonify('not exist')
-    except Exception, e:
+    except Exception as e:
         logger.error('Exception:%s', e)
         logger.error(traceback.format_exc())
 
@@ -410,7 +410,7 @@ def api_group(name):
     try:
         xml = LogicSearchSelf.get_list_by_api(request, False, name)
         return Response(xml, mimetype='application/xml')
-    except Exception, e:
+    except Exception as e:
         logger.error('Exception:%s', e)
         logger.error(traceback.format_exc())
 

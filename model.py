@@ -162,7 +162,7 @@ class ModelSite2(db.Model):
                     db.session.commit()
                     ret['ret'] = "add"
                     ret['log'] = "추가하였습니다."
-        except Exception, e:
+        except Exception as e:
             logger.error('Exception:%s', e)
             logger.error(traceback.format_exc())
             ret['ret'] = "exception"
@@ -171,7 +171,7 @@ class ModelSite2(db.Model):
             count = db.session.query(ModelSite2).filter_by(info_type='web').count()
             ret['log'] += '<br>' + '총 %s개의 웹 연동 정보가 있습니다.' % (count)
             return ret
-        except Exception, e:
+        except Exception as e:
             logger.error('Exception:%s', e)
             logger.error(traceback.format_exc())
 
@@ -183,7 +183,7 @@ class ModelSite2(db.Model):
             if by_dict:
                 tmp = [x.as_dict() for x in tmp]
             return tmp
-        except Exception, e:
+        except Exception as e:
             logger.error('Exception:%s', e)
             logger.error(traceback.format_exc())
 
@@ -202,7 +202,7 @@ class ModelSite2(db.Model):
                 return tmp.as_dict()
             else:
                 return tmp
-        except Exception, e:
+        except Exception as e:
             logger.error('Exception:%s', e)
             logger.error(traceback.format_exc())
     
@@ -215,7 +215,7 @@ class ModelSite2(db.Model):
             db.session.query(ModelSite2).filter_by(id=site_id).delete()
             db.session.commit()
             return True
-        except Exception, e:
+        except Exception as e:
             logger.error('Exception:%s', e)
             logger.error(traceback.format_exc())
             return False
@@ -270,7 +270,7 @@ class ModelScheduler2(db.Model):
             if by_dict:
                 tmp = [x.as_dict() for x in tmp]
             return tmp
-        except Exception, e:
+        except Exception as e:
             logger.error('Exception:%s', e)
             logger.error(traceback.format_exc())
 
@@ -283,7 +283,7 @@ class ModelScheduler2(db.Model):
                 return tmp.as_dict()
             else:
                 return tmp
-        except Exception, e:
+        except Exception as e:
             logger.error('Exception:%s', e)
             logger.error(traceback.format_exc())
 
@@ -295,7 +295,7 @@ class ModelScheduler2(db.Model):
                 return tmp.as_dict()
             else:
                 return tmp
-        except Exception, e:
+        except Exception as e:
             logger.error('Exception:%s', e)
             logger.error(traceback.format_exc())
 
@@ -309,7 +309,7 @@ class ModelScheduler2(db.Model):
                 if self.bbs:
                     return self.bbs[-1]
                 return None
-        except Exception, e:
+        except Exception as e:
             logger.error('Exception:%s', e)
             logger.error(traceback.format_exc())
 
@@ -454,7 +454,7 @@ class ModelGroup2(db.Model):
             if by_dict:
                 tmp = [x.as_dict() for x in tmp]
             return tmp
-        except Exception, e:
+        except Exception as e:
             logger.error('Exception:%s', e)
             logger.error(traceback.format_exc())
 

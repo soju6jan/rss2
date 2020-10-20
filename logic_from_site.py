@@ -5,8 +5,6 @@ import traceback
 import re
 import logging
 from time import sleep
-import urllib
-import urllib2
 import os
 
 # third-party
@@ -15,7 +13,7 @@ from lxml import html
 from xml.sax.saxutils import escape, unescape
 
 # sjva 공용
-from framework import app, db, scheduler, path_data#, celery
+from framework import app, db, scheduler, path_data. py_urllib2, py_urllib#, celery
 from framework.job import Job
 from framework.util import Util
 from system.logic import SystemLogic
@@ -150,11 +148,11 @@ class LogicFromSite(object):
                         if xpath_dict['TITLE_XPATH'].endswith('text()'):
                             logger.debug(a_tag[a_tag_index].xpath(xpath_dict['TITLE_XPATH']))
 
-                            item['title'] = urllib.unquote(a_tag[a_tag_index].xpath(xpath_dict['TITLE_XPATH'])[-1]).strip()
+                            item['title'] = py_urllib.unquote(a_tag[a_tag_index].xpath(xpath_dict['TITLE_XPATH'])[-1]).strip()
                         else:
-                            item['title'] = urllib.unquote(a_tag[a_tag_index].xpath(xpath_dict['TITLE_XPATH'])[0].text_content()).strip()
+                            item['title'] = py_urllib.unquote(a_tag[a_tag_index].xpath(xpath_dict['TITLE_XPATH'])[0].text_content()).strip()
                     else:
-                        item['title'] = urllib.unquote(a_tag[a_tag_index].text_content()).strip()
+                        item['title'] = py_urllib.unquote(a_tag[a_tag_index].text_content()).strip()
                     
                     if 'TITLE_SUB' in xpath_dict:
                         item['title'] = re.sub(xpath_dict['TITLE_SUB'][0], xpath_dict['TITLE_SUB'][1], item['title']).strip()
@@ -302,10 +300,10 @@ class LogicFromSite(object):
                 if t.group('filename').strip() == '':
                     continue
                 entity = {}
-                entity['link'] = urllib.unquote(t.group('url').strip()).strip()
+                entity['link'] = py_urllib.unquote(t.group('url').strip()).strip()
                 entity['link'] = unescape(entity['link'])
                 logger.debug(entity['link'])
-                entity['filename'] = urllib.unquote(t.group('filename').strip())
+                entity['filename'] = py_urllib.unquote(t.group('filename').strip())
                 entity['filename'] = unescape(entity['filename'])
                 if 'DOWNLOAD_URL_SUB' in site_instance.info:
                     logger.debug(entity['link'])
@@ -417,20 +415,20 @@ class LogicFromSite(object):
         data = None
         for i in range(3):
             try:
-                request = urllib2.Request(url, headers=headers)
+                request = py_urllib2.Request(url, headers=headers)
                 logger.debug(url)
-                data = urllib2.urlopen(request).read()
+                data = py_urllib2.urlopen(request).read()
             except Exception as e:
                 logger.debug('Exception:%s', e)
                 logger.debug(traceback.format_exc())
                 try:
-                    data = urllib2.urlopen(request, headers=headers, context=ssl.SSLContext(ssl.PROTOCOL_TLSv1)).read()
+                    data = py_urllib2.urlopen(request, headers=headers, context=ssl.SSLContext(ssl.PROTOCOL_TLSv1)).read()
                 except:
                     try:
-                        data = urllib2.urlopen(request, headers=headers, context=ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)).read()
+                        data = py_urllib2.urlopen(request, headers=headers, context=ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)).read()
                     except:
                         try:
-                            data = urllib2.urlopen(request, headers=headers, context=ssl.SSLContext(ssl.PROTOCOL_TLSv1_3)).read()
+                            data = py_urllib2.urlopen(request, headers=headers, context=ssl.SSLContext(ssl.PROTOCOL_TLSv1_3)).read()
                         except:
                             pass
             if data is not None:
@@ -483,7 +481,7 @@ class LogicFromSite(object):
                     del headers['Cookie']
                 if stream:
                     return page_content
-                data = page_content.content
+                data = page_content.text
             #logger.debug(data)
         except Exception as e:
             logger.error('Exception:%s', e)

@@ -157,7 +157,7 @@ class LogicSearchSelf(object):
             paging = Util.get_paging_info(count, page, page_size)
             return ret, paging
           
-        except Exception, e:
+        except Exception as e:
             logger.debug('Exception:%s', e)
             logger.debug(traceback.format_exc())
 
@@ -197,7 +197,7 @@ class LogicSearchSelf(object):
                 
             
             return xml   
-        except Exception, e:
+        except Exception as e:
             logger.debug('Exception:%s', e)
             logger.debug(traceback.format_exc())
             logger.debug('get_list_by_api is_site:%s, arg:%s, site:%s, board_id:%s', is_site, arg, site, board_id)
