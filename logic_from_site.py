@@ -13,7 +13,7 @@ from lxml import html
 from xml.sax.saxutils import escape, unescape
 
 # sjva 공용
-from framework import app, db, scheduler, path_data. py_urllib2, py_urllib#, celery
+from framework import app, db, scheduler, path_data, py_urllib2, py_urllib#, celery
 from framework.job import Job
 from framework.util import Util
 from system.logic import SystemLogic
