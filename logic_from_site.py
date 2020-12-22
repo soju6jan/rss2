@@ -275,6 +275,9 @@ class LogicFromSite(object):
                 except Exception as e:
                     logger.debug('Exception:%s', e)
                     logger.debug(traceback.format_exc())
+            # 2020-12-23
+            if 'MAGNET_ONLY_ONE_LAST' in site_instance.info['EXTRA']:
+                magnet_list = [magnet_list[-1]]
         except Exception as e:
             logger.debug('Exception:%s', e)
             logger.debug(traceback.format_exc())
