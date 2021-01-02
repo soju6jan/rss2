@@ -330,7 +330,7 @@ class LogicSelf(object):
             items = ModelScheduler2.get_list()
             for item in items:
                 logger.debug(u'스케쥴링 시작')
-                logger.debug('%s %s', item.sitename, item.board_id)
+                logger.debug('%s %s %s', item.sitename, item.board_id, item.include_scheduler)
                 if item.site is None:
                     continue
                 if not item.include_scheduler:
