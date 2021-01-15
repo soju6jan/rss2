@@ -354,16 +354,8 @@ class LogicFromSite(object):
                                     byteio = io.BytesIO()
                                     for chunk in data.iter_content(1024):
                                         byteio.write(chunk)
-                                from discord_webhook import DiscordWebhook, DiscordEmbed
-                                webhook_url = app.config['config']['rss_subtitle_webhook']
-                                text = '%s\n<%s>' % (item['title'], item['url'])
-                                webhook = DiscordWebhook(url=webhook_url, content=text)
-                                webhook.add_file(file=byteio.getvalue(), filename=entity['filename'])
-                                response = webhook.execute()
-                                discord = response.json()
-                                logger.debug(discord)
-                                if 'attachments' in discord:
-                                    entity['direct_url'] = discord['attachments'][0]['url']
+                                from tool_expand import ToolExpandDiscord
+                                entity['direct_url'] = ToolExpandDiscord.discord_cdn(byteio=byteio, filename=entity['filename'], webhook_url=app.config['config']['rss_subtitle_webhook'], content='%s\n<%s>' % (item['title'], item['url']))
                         except Exception as e:
                             logger.debug('Exception:%s', e)
                             logger.debug(traceback.format_exc())
