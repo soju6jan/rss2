@@ -75,7 +75,7 @@ def first_menu(sub):
             arg['package_name']  = package_name
             arg['scheduler'] = str(scheduler.is_include(package_name))
             arg['is_running'] = str(scheduler.is_running(package_name))
-            arg['is_test_server'] = app.config['config']['server']
+            arg['is_test_server'] = (app.config['config']['is_server'] or app.config['config']['is_debug'])
             return render_template('%s_%s.html' % (package_name, sub), arg=arg)
         elif sub in ['site', 'scheduler', 'group']:
             arg = {'package_name' : package_name}
@@ -236,9 +236,6 @@ def ajax(sub):
                 logger.error(traceback.format_exc())
         elif sub == 'server_test':
             logger.debug('server_test')
-            #from framework.common.torrent.process import TorrentProcess
-            #tmp  = db.session.query(ModelBbs2).all()
-            #ret = TorrentProcess.server_process(tmp, category='AV')
             from sqlalchemy import desc
             from bot_downloader_movie.model import ModelMovieItem
             import json

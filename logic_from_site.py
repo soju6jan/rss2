@@ -322,7 +322,7 @@ class LogicFromSite(object):
                         exist = True
                         break
                 if not exist:
-                    if app.config['config']['is_sjva_server'] and len(item['magnet'])>0:# or True:
+                    if app.config['config']['is_server'] and len(item['magnet'])>0:# or True:
                         try:
                             ext = os.path.splitext(entity['filename'])[1].lower()
                             #item['magnet']

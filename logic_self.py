@@ -368,8 +368,9 @@ class LogicSelf(object):
                         if group_name is not None:
                             break
                     
-                    from framework.common.torrent.process import TorrentProcess
-                    TorrentProcess.server_process(save_list, category=group_name)
+                    if app.config['config']['is_server']:
+                        from tool_expand import TorrentProcess
+                        TorrentProcess.server_process(save_list, category=group_name)
 
 
             # selenium이 celery에서 돌 경우 해제안됨.
