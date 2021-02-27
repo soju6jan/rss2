@@ -76,9 +76,6 @@ class LogicFromSite(object):
                     # Stem 4. Torrent_info
                     item['torrent_info'] = LogicFromSite.__get_torrent_info(item['magnet'], scheduler_instance)
 
-                    #if item['torrent_info']:
-                    #    item['title2'] = item['torrent_info'][0]['name']
-
                     if 'SLEEP_5' in site_instance.info['EXTRA']: 
                         sleep(5)
                     if 'DELAY' in site_instance.info:
