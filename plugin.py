@@ -236,12 +236,25 @@ def ajax(sub):
                 logger.error(traceback.format_exc())
         elif sub == 'server_test':
             logger.debug('server_test')
+            """
             from sqlalchemy import desc
             from bot_downloader_movie.model import ModelMovieItem
             import json
             datas = db.session.query(ModelMovieItem).order_by(ModelMovieItem.id).limit(7000).all()
             for data in datas:
                 response = requests.post("https://sjva.me/sjva/torrent_%s.php" % 'movie', data={'data':json.dumps(data.as_dict())})
+            """
+            group_name = 'AV'
+            save_list = LogicSearchSelf.get_list(call='api', group=group_name)
+            logger.debug(len(save_list))
+            save_list = save_list[:10]
+            if app.config['config']['is_server'] or app.config['config']['is_debug']:
+                from tool_expand import TorrentProcess
+                TorrentProcess.server_process(save_list, category=group_name)
+
+
+
+
             return ""
 
             #return jsonify(ret)

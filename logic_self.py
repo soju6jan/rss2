@@ -368,7 +368,7 @@ class LogicSelf(object):
                         if group_name is not None:
                             break
                     
-                    if app.config['config']['is_server']:
+                    if app.config['config']['is_server'] or app.config['config']['is_debug']:
                         from tool_expand import TorrentProcess
                         TorrentProcess.server_process(save_list, category=group_name)
 
