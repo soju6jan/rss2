@@ -65,7 +65,11 @@ class LogicSelf(object):
         try:
             site_id = req.form['modal_site_id']
             modal_site_json = req.form['modal_site_json']
-            info = json.loads(modal_site_json.decode('utf8'))
+            try:
+                info = json.loads(modal_site_json.decode('utf8'))
+            except:
+                info = json.loads(modal_site_json)
+                
             entity = ModelSite2.get(site_id=site_id)
             if entity is not None:
                 from sqlalchemy.orm.attributes import flag_modified
