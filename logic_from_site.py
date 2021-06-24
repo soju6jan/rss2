@@ -352,7 +352,7 @@ class LogicFromSite(object):
                                     for chunk in data.iter_content(1024):
                                         byteio.write(chunk)
                                 from tool_expand import ToolExpandDiscord
-                                entity['direct_url'] = ToolExpandDiscord.discord_cdn(byteio=byteio, filename=entity['filename'], webhook_url=app.config['config']['rss_subtitle_webhook'], content='%s\n<%s>' % (item['title'], item['url']))
+                                entity['direct_url'] = ToolExpandDiscord.discord_cdn(byteio=byteio, filename=entity['filename'], webhook_url=app.config['DEFINE']['RSS_SUBTITLE_UPLOAD_WEBHOOK'], content='%s\n<%s>' % (item['title'], item['url']))
                         except Exception as e:
                             logger.debug('Exception:%s', e)
                             logger.debug(traceback.format_exc())
