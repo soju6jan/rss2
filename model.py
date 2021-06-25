@@ -334,6 +334,7 @@ class ModelBbs2(db.Model):
     files = db.Column(db.String)  # url|filename||url|filename
     torrent_info = db.Column(db.JSON)
     scheduler_id = db.Column(db.Integer, db.ForeignKey('%s_scheduler2.id' % package_name))
+    broadcast_status = db.Column(db.String)
    
 
     def __init__(self, scheduler_instance):
@@ -343,6 +344,7 @@ class ModelBbs2(db.Model):
         self.torrent_info = None
         self.site = scheduler_instance.site.info['NAME']
         self.board = scheduler_instance.board_id
+        self.broadcast_status = ''
 
     def __repr__(self):
         return repr(self.as_dict())
@@ -385,38 +387,6 @@ class ModelBbs2(db.Model):
             logger.error(traceback.format_exc())
 
 
-"""
-class ModelFile2(db.Model):
-    __tablename__ = 'plugin_%s_file' % package_name
-    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
-    __bind_key__ = package_name
-
-    created_time = db.Column(db.DateTime)
-    #bbs_id = db.Column(db.Integer)
-    bbs_id = db.Column(db.Integer, db.ForeignKey('plugin_%s_bbs.id' % package_name))
-    is_torrent = db.Column(db.Boolean)
-    filename = db.Column(db.String())
-    link = db.Column(db.String())
-    magnet = db.Column(db.String())
-    size = db.Column(db.String())
-    #bbs = db.relationship("TbUser", backref=backref("addresses", order_by=id))
-    bbs = db.relationship('ModelBbs2', backref='plugin_%s_bbs' % package_name, lazy=True)
-
-    def __repr__(self):
-        return repr(self.as_dict())
-
-    def as_dict(self):
-        ret = {x.name: getattr(self, x.name) for x in self.__table__.columns}
-        ret['created_time'] = self.created_time.strftime('%m-%d %H:%M:%S')
-        return ret
-"""    
-
-"""
-group_scheduler2 = db.Table('plugin_%s_group_scheduler2' % package_name,
-    db.Column('group_id', db.Integer, db.ForeignKey('%s_group.id' % package_name)),
-    db.Column('scheduler_id', db.Integer, db.ForeignKey('%s_scheduler2.id' % package_name))
-)
-"""
 
 class ModelGroup2(db.Model):
     __tablename__ = '%s_group' % package_name
@@ -468,141 +438,3 @@ class ModelGroup2(db.Model):
 
 
 
-
-
-
-
-
-
-
-
-"""
-
-class ModelBbsBot2(db.Model):
-    __tablename__ = 'plugin_%s_bbs_bot' % package_name
-    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
-    __bind_key__ = package_name
-
-    category_list = ['drama', 'ent', 'dacu', 'etc', 'movie', 'av_censored', 'av_uncensored', 'av_west', 'music', 'user']
-
-    id = db.Column(db.Integer, primary_key=True)
-    created_time = db.Column(db.DateTime)
-    site = db.Column(db.String())
-    board = db.Column(db.String())
-    board_id = db.Column(db.Integer)
-    #board_char_index = db.Column(db.String)
-    title = db.Column(db.String())
-    url = db.Column(db.String())
-    count = db.Column(db.Integer)
-    magnet = db.Column(db.String())
-    files = db.relationship('ModelFileBot2', backref='plugin_%s_file_bot' % package_name, lazy=True)
-    
-    rss_type = db.Column(db.String())
-    file_name = db.Column(db.String())
-    file_date = db.Column(db.String())
-    file_number = db.Column(db.String())
-    file_quality = db.Column(db.String())
-    file_release = db.Column(db.String())
-    daum_id = db.Column(db.String())
-    daum_title = db.Column(db.String())
-    daum_genre = db.Column(db.String())    
-    daum_poster_url = db.Column(db.String())
-    json = db.Column(db.JSON())
-
-    def __repr__(self):
-        return repr(self.as_dict())
-
-    def as_dict(self):
-        ret = {x.name: getattr(self, x.name) for x in self.__table__.columns}
-        ret['created_time'] = self.created_time.strftime('%m-%d %H:%M:%S')
-        if self.json is not None:
-            ret['json'] = json.loads(ret['json'])
-        else:
-            ret['json'] = {}
-        ret['files'] = []
-        for f in self.files:
-            ret['files'].append(f.as_dict())
-        return ret
-
-    @staticmethod
-    def add(data):
-        try:
-            #tmp = db.session.query(ModelBbsBot).filter(ModelBbsBot.magnet == data['rss']['magnet']).filter(ModelBbsBot.rss_type == data['info']['rss_type']).count()
-            #logger.debug('count : %s %s %s', tmp, data['rss']['magnet'], data['info']['rss_type'])
-            #if tmp == 0:
-            # 2018-07-14 잘못 올라오는 경우
-            if data['info']['rss_type'] in ['drama', 'dacu', 'ent']:
-                count = db.session.query(ModelBbsBot2).filter_by(magnet=data['rss']['magnet']).filter(or_(ModelBbsBot2.rss_type=='drama', ModelBbsBot2.rss_type=='dacu', ModelBbsBot2.rss_type=='ent')).count()
-            else:
-                count = db.session.query(ModelBbsBot2).filter_by(magnet=data['rss']['magnet']).filter_by(rss_type=data['info']['rss_type']).count()
-            if count == 0:
-                e = ModelBbsBot2()
-                e.created_time = datetime.now()
-                e.site = data['rss']['site']
-                e.board = data['rss']['board']
-                e.board_id = data['rss']['board_id']
-                e.title = data['rss']['title']
-                e.url = data['rss']['url']
-                e.count = data['rss']['count']
-                e.magnet = data['rss']['magnet']
-                e.files = []
-                for rss_file in data['rss']['files']:
-                    f = ModelFileBot2()
-                    f.created_time = datetime.now()
-                    f.is_torrent = rss_file['is_torrent']
-                    # 2019-07-01 null인지 '' 인지 확인
-                    f.filename = rss_file['filename'].strip() if rss_file['filename'] is not None else rss_file['filename']
-                    f.link = rss_file['link']
-                    f.magnet = rss_file['magnet']
-                    f.size = rss_file['size']
-                    e.files.append(f)
-                
-                e.rss_type = data['info']['rss_type']
-                if 'file' in data:
-                    e.file_name = data['file']['name']
-                    e.file_date = data['file']['date']
-                    e.file_number = data['file']['number']
-                    e.file_quality = data['file']['quality']
-                    e.file_release = data['file']['release']
-                if 'daum' in data:
-                    e.daum_id = data['daum']['daum_id']
-                    e.daum_title = data['daum']['title']
-                    e.daum_genre = data['daum']['genre']
-                    e.daum_poster_url = data['daum']['poster_url']
-                if 'json' in data:
-                    e.json = json.dumps(data['json'])
-                db.session.add(e)
-                db.session.commit()
-                return e
-            else:
-                return 'exist'
-        except Exception as e: 
-            logger.error('Exception:%s', e)
-            logger.error(traceback.format_exc())
-            return 'false'
-
-
-class ModelFileBot2(db.Model):
-    __tablename__ = 'plugin_%s_file_bot' % package_name
-    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
-    __bind_key__ = package_name
-
-    id = db.Column(db.Integer, primary_key=True)
-    created_time = db.Column(db.DateTime)
-    bbs_id = db.Column(db.Integer, db.ForeignKey('plugin_%s_bbs_bot.id' % package_name))
-    is_torrent = db.Column(db.Boolean)
-    filename = db.Column(db.String())
-    link = db.Column(db.String())
-    magnet = db.Column(db.String())
-    size = db.Column(db.String())
-    bbs = db.relationship('ModelBbsBot2', backref='plugin_%s_bbs_bot' % package_name, lazy=True)
-
-    def __repr__(self):
-        return repr(self.as_dict())
-
-    def as_dict(self):
-        ret = {x.name: getattr(self, x.name) for x in self.__table__.columns}
-        ret['created_time'] = self.created_time.strftime('%m-%d %H:%M:%S')
-        return ret
-    
-"""
