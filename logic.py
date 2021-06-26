@@ -162,15 +162,18 @@ class Logic(object):
                 ModelSetting.set('db_version', '2')
                 db.session.flush()
             elif ModelSetting.get('db_version') == '2':
-                import sqlite3
-                db_file = os.path.join(path_app_root, 'data', 'db', '%s.db' % package_name)
-                connection = sqlite3.connect(db_file)
-                cursor = connection.cursor()
-                query = 'ALTER TABLE %s_bbs2 ADD broadcast_status VARCHAR' % (package_name)
-                cursor.execute(query)
-                connection.close()
-                ModelSetting.set('db_version', '2')
-                db.session.flush()
+                try:
+                    import sqlite3
+                    db_file = os.path.join(path_app_root, 'data', 'db', '%s.db' % package_name)
+                    connection = sqlite3.connect(db_file)
+                    cursor = connection.cursor()
+                    query = 'ALTER TABLE %s_bbs2 ADD broadcast_status VARCHAR' % (package_name)
+                    cursor.execute(query)
+                    connection.close()
+                    ModelSetting.set('db_version', '3')
+                    db.session.flush()
+                except:
+                    ModelSetting.set('db_version', '3')
         except Exception as e:
             logger.error('Exception:%s', e)
             logger.error(traceback.format_exc())
