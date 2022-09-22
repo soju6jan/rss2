@@ -226,29 +226,6 @@ function make_list_html(data) {
         if (is_available_normal_download) {
           tmp2 += m_button('global_downloader_add_btn', '다운로드 추가', [{'key':'hash', 'value':sub_url }]);
         }
-        if (is_torrent_info_installed) {
-          tmp2 += m_button('global_torrent_info_btn', 'Torrent Info', [{'key':'hash', 'value':data[i].magnet[j]}]);
-        }
-        tmp += m_button_group(tmp2)
-        str2 += m_col(10, tmp)
-        str2 += m_row_end()
-        if (j != data[i].magnet.length -1) str2 += '<br>';
-      }
-    }
-
-    if (data[i].files != null) {
-      str2 += '<br>';
-      for (j in data[i].files) {
-        str2 += m_row_start(0);
-        str2 += m_col(2, '첨부파일', 'right');
-        sub_url = ddns+'/'+package_name+'/api/download/' + data[i].id + '_'+ j;
-        if (apikey != '') 
-        sub_url += '?apikey=' + apikey;
-        tmp = '<a href="'+sub_url+'">' + data[i].files[j][1] + '</a><br>';
-        tmp2 = ''
-        if (is_available_normal_download) {
-          tmp2 += m_button('global_downloader_add_btn', '다운로드 추가', [{'key':'hash', 'value':sub_url }]);
-        }
         tmp2 += m_button('global_offcloud_add_btn', 'Offcloud 추가', [{'key':'hash', 'value':sub_url }]);
         tmp += m_button_group(tmp2)
         tmp += '<br>'
