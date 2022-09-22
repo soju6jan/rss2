@@ -73,6 +73,7 @@ var ddns = "{{arg['ddns']}}"
 var is_available_normal_download = ("{{arg['is_available_normal_download']}}" == 'True')
 var first_search_word = "{{arg['search_word']}}"
 var apikey = "{{ arg['apikey'] }}";
+var is_pikpak_installed = ("{{arg['is_pikpak_installed']}}" == 'True')
 var is_torrent_info_installed = ("{{arg['is_torrent_info_installed']}}" == 'True')
 var site_info = null;
 
@@ -199,6 +200,9 @@ function make_list_html(data) {
         tmp2 = m_button('global_downloader_add_btn', '다운로드 추가', [{'key':'hash', 'value':data[i].magnet[j]}]);
         tmp2 += m_button('global_offcloud_add_btn', 'Offcloud 추가', [{'key':'hash', 'value':data[i].magnet[j]}]);
         tmp2 += m_button('global_offcloud_cache_confirm_btn', 'Offcloud 캐쉬확인', [{'key':'hash', 'value':data[i].magnet[j]}]);
+        if (is_pikpak_installed) {
+          tmp2 += m_button('pikpak_downloader_add_btn', 'PikPak다운추가', [{'key':'hash', 'value':data[i].magnet[j]}]);
+        }
         if (is_torrent_info_installed) {
           tmp2 += m_button('global_torrent_info_btn', 'Torrent Info', [{'key':'hash', 'value':data[i].magnet[j]}]);
         }
@@ -292,6 +296,23 @@ $("body").on('click', '#torrent_info_show_btn', function(e) {
   
   m_modal(data[i].torrent_info[j], "저장된 토렌트 정보")
 });
+
+$("body").on('click', '#pikpak_downloader_add_btn', function(e){
+  e.preventDefault();
+  download_url = $(this).data('hash');
+  default_torrent_program = '4';
+  $.ajax({
+    url: '/downloader/ajax/add_download',
+    type: "POST",
+    cache: false,
+    data: {download_url:download_url, default_torrent_program:default_torrent_program},
+    dataType: "json",
+    success: function (data) {
+      show_result_add_download(data);
+    }
+  });
+});
+
 
 </script>    
 {% endblock %}

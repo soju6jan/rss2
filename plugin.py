@@ -97,6 +97,12 @@ def first_menu(sub):
                 arg['is_torrent_info_installed'] = True
             except Exception as e: 
                 pass
+            arg['is_pikpak_installed'] = False
+            try:
+                from downloader.logic_pikpak import LogicPikPak
+                arg['is_pikpak_installed'] = True
+            except Exception as e: 
+                pass
             arg['apikey'] = ''
             if SystemModelSetting.get_bool('auth_use_apikey'):
                 arg['apikey'] = SystemModelSetting.get('auth_apikey')
